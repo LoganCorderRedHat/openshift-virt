@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: MIT-0
+# ---
+# defaults file for ocp_virt
+ocp_virt_vm_action: create
+ocp_virt_vm_secondary_networks: null

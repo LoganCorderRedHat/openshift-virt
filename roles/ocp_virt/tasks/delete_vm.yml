@@ -1,0 +1,17 @@
+- name: Ensure required variables are defined for VM deletion
+  ansible.builtin.assert:
+    that:
+      - vm_name is defined
+      - vm_namespace is defined
+    fail_msg: >
+      Missing required variables for VM deletion.
+      Please provide: vm_name and vm_namespace.
+
+- name: Delete the VirtualMachine
+  redhat.openshift_virtualization.kubevirt_vm:
+    validate_certs: false
+    state: absent
+    name: "{{ vm_name }}"
+    namespace: "{{ vm_namespace }}"
+    wait: true
+    wait_timeout: "{{ wait_timeout | default(600) }}"

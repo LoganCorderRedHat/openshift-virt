@@ -1,0 +1,26 @@
+- name: Ensure required variables are defined for VM restart
+  ansible.builtin.assert:
+    that:
+      - vm_name is defined
+      - vm_namespace is defined
+    fail_msg: >
+      Missing required variables for VM restart.
+      Please provide: vm_name and vm_namespace.
+
+- name: Stop the VirtualMachine for restart
+  redhat.openshift_virtualization.kubevirt_vm:
+    validate_certs: false
+    name: "{{ vm_name }}"
+    namespace: "{{ vm_namespace }}"
+    running: false
+    wait: true
+    wait_timeout: "{{ wait_timeout | default(600) }}"
+
+- name: Start the VirtualMachine after stop
+  redhat.openshift_virtualization.kubevirt_vm:
+    validate_certs: false
+    name: "{{ vm_name }}"
+    namespace: "{{ vm_namespace }}"
+    running: true
+    wait: true
+    wait_timeout: "{{ wait_timeout | default(600) }}"

@@ -1,0 +1,29 @@
+- name: Resolve VM action
+  ansible.builtin.set_fact:
+    ocp_virt_requested_action: "{{ vm_action | default(ocp_virt_vm_action) }}"
+
+- name: Validate requested VM action
+  ansible.builtin.assert:
+    that:
+      - ocp_virt_requested_action in ['create', 'delete', 'start', 'stop', 'restart']
+    fail_msg: "Invalid vm_action. Supported values: create, delete, start, stop, restart."
+
+- name: Create OpenShift VirtualMachine
+  ansible.builtin.import_tasks: create_vm.yml
+  when: ocp_virt_requested_action == 'create'
+
+- name: Delete OpenShift VirtualMachine
+  ansible.builtin.import_tasks: delete_vm.yml
+  when: ocp_virt_requested_action == 'delete'
+
+- name: Start OpenShift VirtualMachine
+  ansible.builtin.import_tasks: start_vm.yml
+  when: ocp_virt_requested_action == 'start'
+
+- name: Stop OpenShift VirtualMachine
+  ansible.builtin.import_tasks: stop_vm.yml
+  when: ocp_virt_requested_action == 'stop'
+
+- name: Restart OpenShift VirtualMachine
+  ansible.builtin.import_tasks: restart_vm.yml
+  when: ocp_virt_requested_action == 'restart'
